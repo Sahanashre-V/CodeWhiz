@@ -21,17 +21,15 @@ const Register = ({ navigation }) => {
         }
 
         try {
-            const response = await axios.post("exp://192.168.240.40:8080/api/register", {
-                name,
-                email, 
-                password
-            });
-
-            console.log(response)
+            const response = await axios.post(
+                "http://10.1.13.176:5000/api/register",
+                { name, email, password },
+                { headers: { "Content-Type": "application/json" } }
+            );
 
             if (response.status === 201) {
                 Alert.alert("Success", "Account created successfully!");
-                navigation.navigate("Login");  // Redirect to Login screen
+                navigation.navigate("Login");  
             } else {
                 Alert.alert("Error", response.data.message || "Something went wrong!");
             }
