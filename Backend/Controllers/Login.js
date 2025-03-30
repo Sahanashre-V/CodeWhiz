@@ -1,44 +1,35 @@
-const bcrypt = require('bcrypt');
-const registerModel = require("../Model/Register");
 const jwt = require("jsonwebtoken");
-const env = require("dotenv").config();
+const bcrypt = require("bcrypt");
+const registerModel = require("../Model/Register");
+require("dotenv").config();
 
 const login = async (req, res) => {
-    const { email, password } = req.body;
-    console.log(req.body)
-
     try {
-        const user = await registerModel.findOne({ email });
+        const { email, password } = req.body;
 
-        if (!user) {
-            return res.status(400).json({ message: "User doesn't exist. Kindly register" });
+        if (!email || !password) {
+            return res.status(400).json({ message: "Both email and password are required" });
         }
 
-        if (!password) {
-            return res.status(400).json({ message: "Password is required" });
+        const user = await registerModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User does not exist. Please register." });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
-
-console.log("Entered password:", password);
-console.log("Stored hashed password:", user.password);
-console.log("Password Match Result:", passwordMatch);
-
-        
         if (!passwordMatch) {
-            return res.status(400).json({ message: "Incorrect password" });
+            return res.status(401).json({ message: "Incorrect password" });
         }
 
         const token = jwt.sign(
             { username: user.username, email: user.email },
             process.env.SECRET_KEY,
-            { expiresIn: '1h' }
+            { expiresIn: "1h" }
         );
 
-        return res.status(200).json({ token, message: "Login successful" });
-
+        res.status(200).json({ message: "Login successful", token });
     } catch (error) {
-        return res.status(500).json({ message: "Internal server error", error: error.message });
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 

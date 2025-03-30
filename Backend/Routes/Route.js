@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const register = require("../Controllers/Register")
 const login = require("../Controllers/Login")
+const aiIntegrate = require("../Controllers/AiIntegrate")
 
 const AuthenticateToken = (req, res, next) => {
     const authHeader = req.headers["authorization"];
@@ -29,5 +30,6 @@ const AuthenticateToken = (req, res, next) => {
 
 Router.post("/register", register);
 Router.post("/login", login);
+Router.post("/gemini",aiIntegrate);
 
 module.exports = Router
