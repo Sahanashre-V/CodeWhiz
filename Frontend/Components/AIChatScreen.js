@@ -13,10 +13,11 @@ const AIChatScreen = () => {
         setLoading(true);
         try {
             const res = await axios.post(
-                "http://10.1.13.176:5000/api/gemini",
+                "http://192.168.140.40:5000/api/gemini",
                 { prompt: input },
                 { headers: { "Content-Type": "application/json" } }
             );
+           console.log("response->=>=>", res)
             setResponse(res.data.message);
         } catch (error) {
             console.error("Error fetching AI response:", error);

@@ -9,7 +9,7 @@ const Login = ({ navigation }) => {
     const handleLogin = async () => {
         try {
             const response = await axios.post(
-                "http://10.1.13.176:5000/api/login",
+                "http://192.168.140.40:5000/api/login",
                 { email, password },
                 { headers: { "Content-Type": "application/json" } }
             );
