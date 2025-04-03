@@ -86,4 +86,49 @@ const Register = ({ navigation }) => {
     );
 };
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#fff",
+    },
+    content: {
+        width: "80%",
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
+    },
+    input: {
+        width: "100%",
+        height: 40,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 5,
+        paddingLeft: 10,
+        marginBottom: 10,
+    },
+    button: {
+        backgroundColor: "#007bff",
+        padding: 10,
+        borderRadius: 5,
+        alignItems: "center",
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    loginText: {
+        marginTop: 10,
+        textAlign: "center",
+    },
+    link: {
+        color: "blue",
+        fontWeight: "bold",
+    },
+});
+
 export default Register;

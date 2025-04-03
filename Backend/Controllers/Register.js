@@ -1,14 +1,20 @@
-const dotenv = require('dotenv').config();
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const registerModel = require('../Model/Register');
+const Register = require('../Model/Register')
+
+require('dotenv').config();
 
 const register = async (req, res) => {
   try {
+    // console.log(Register, "is it a model?")
     const { name, email, password } = req.body;
+    // console.log(name, email, password, "body->>>>>>>>>>>");
 
-    const emailExists = await registerModel.findOne({ email });
-    const nameExists = await registerModel.findOne({ name });
+    const emailExists = await Register.findOne({email})
+    const nameExists = await Register.findOne({name})
+
+    // console.log(emailExists, "email exists->>>")
 
     if (emailExists) {
       return res.status(400).json({ message: "User with this email already exists" });
@@ -17,21 +23,24 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "Username already exists. Please choose another." });
     }
 
-    const newRegister = new registerModel({
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+
+    const newRegister = await Register.create({
       name,
       email,
-      password
+      password:hashedPassword
     });
 
-    const savedRegister = await newRegister.save();
 
     const accessToken = jwt.sign(
-      { name: savedRegister.name, email: savedRegister.email },
+      { name: newRegister.name, email: newRegister.email },
       process.env.SECRET_KEY,
       { expiresIn: '1h' }
     );
 
-    return res.status(201).json({ name: savedRegister.name, accessToken });
+    return res.status(201).json({ name: newRegister.name, accessToken });
   } catch (error) {
     return res.status(500).json({ error: "Error in registering account", details: error.message });
   }
