@@ -30,6 +30,6 @@ const AuthenticateToken = (req, res, next) => {
 
 Router.post("/register", register);
 Router.post("/login", login);
-Router.post("/gemini",aiIntegrate);
+Router.post("/gemini", AuthenticateToken, aiIntegrate);
 
 module.exports = Router

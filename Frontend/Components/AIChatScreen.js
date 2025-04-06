@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    ScrollView,
+    StyleSheet
+} from "react-native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AIChatScreen = () => {
     const [input, setInput] = useState("");
@@ -12,12 +20,20 @@ const AIChatScreen = () => {
 
         setLoading(true);
         try {
+            const token = await AsyncStorage.getItem("token");
+
             const res = await axios.post(
                 "http://192.168.140.40:5000/api/gemini",
                 { prompt: input },
-                { headers: { "Content-Type": "application/json" } }
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`, 
+                    },
+                }
             );
-           console.log("response->=>=>", res)
+
+            // console.log("response->=>=>", res);
             setResponse(res.data.message);
         } catch (error) {
             console.error("Error fetching AI response:", error);
@@ -37,8 +53,14 @@ const AIChatScreen = () => {
                 value={input}
                 onChangeText={setInput}
             />
-            <TouchableOpacity style={styles.button} onPress={sendMessage} disabled={loading}>
-                <Text style={styles.buttonText}>{loading ? "Thinking..." : "Send"}</Text>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={sendMessage}
+                disabled={loading}
+            >
+                <Text style={styles.buttonText}>
+                    {loading ? "Thinking..." : "Send"}
+                </Text>
             </TouchableOpacity>
         </View>
     );
@@ -73,7 +95,7 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 10,
-        backgroundColor: "#007bff",
+        backgroundColor: "#007BFF",
         padding: 15,
         borderRadius: 8,
         alignItems: "center",
@@ -81,6 +103,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "#fff",
         fontSize: 16,
+        fontWeight: "bold",
     },
 });
 
