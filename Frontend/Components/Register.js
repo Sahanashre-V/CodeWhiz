@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import { 
-    View, 
-    Text, 
-    TextInput, 
-    StyleSheet, 
-    TouchableOpacity, 
-    Alert 
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView
 } from "react-native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -30,8 +34,10 @@ const Register = ({ navigation }) => {
             );
 
             if (response.status === 201) {
+                const token = response.data.accessToken;
+                await AsyncStorage.setItem("token", token);
                 Alert.alert("Success", "Account created successfully!");
-                navigation.navigate("AIChatScreen"); // Navigate to AIChatScreen
+                navigation.navigate("AIChatScreen");
             } else {
                 Alert.alert("Error", response.data.message || "Something went wrong!");
             }
@@ -42,59 +48,67 @@ const Register = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Navbar />
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+            <View style={styles.container}>
+                <Navbar />
 
-            <View style={styles.content}>
-                <Text style={styles.title}>Register</Text>
+                <ScrollView contentContainerStyle={styles.content}>
+                    <Text style={styles.title}>Register</Text>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Full Name"
-                    value={name}
-                    onChangeText={setName}
-                />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Full Name"
+                        value={name}
+                        onChangeText={setName}
+                    />
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    keyboardType="email-address"
-                    value={email}
-                    onChangeText={setEmail}
-                />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        keyboardType="email-address"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    secureTextEntry
-                    value={password}
-                    onChangeText={setPassword}
-                />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
+                    />
 
-                <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                    <Text style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                        <Text style={styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
 
-                <Text style={styles.loginText}>
-                    Already have an account?  
-                    <Text style={styles.link} onPress={() => navigation.navigate("Login")}> Login</Text>
-                </Text>
+                    <Text style={styles.loginText}>
+                        Already have an account?
+                        <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
+                            {" "}Login
+                        </Text>
+                    </Text>
+                </ScrollView>
+
+                <Footer />
             </View>
-
-            <Footer />
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#fff",
+        backgroundColor: "#f5f5f5",
     },
     content: {
-        width: "80%",
+        flexGrow: 1,
+        justifyContent: "center",  
+        alignItems: "center",      
+        padding: 20,
     },
     title: {
         fontSize: 24,
@@ -103,30 +117,33 @@ const styles = StyleSheet.create({
     },
     input: {
         width: "100%",
-        height: 40,
-        borderWidth: 1,
+        height: 50,
         borderColor: "#ccc",
-        borderRadius: 5,
-        paddingLeft: 10,
-        marginBottom: 10,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 15,
+        marginBottom: 15,
+        backgroundColor: "#fff",
     },
     button: {
         backgroundColor: "#007bff",
-        padding: 10,
-        borderRadius: 5,
-        alignItems: "center",
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderRadius: 8,
+        marginTop: 10,
+        width: "100%",
     },
     buttonText: {
         color: "#fff",
         fontSize: 16,
-        fontWeight: "bold",
-    },
-    loginText: {
-        marginTop: 10,
         textAlign: "center",
     },
+    loginText: {
+        marginTop: 20,
+        fontSize: 14,
+    },
     link: {
-        color: "blue",
+        color: "#007bff",
         fontWeight: "bold",
     },
 });

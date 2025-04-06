@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 const Navbar = () => {
     return (
         <View style={styles.navbar}>
-            <Text style={styles.navText}>AI Chat App</Text>
+            <Text style={styles.navText}>CodeWhiz</Text>
         </View>
     );
 };
